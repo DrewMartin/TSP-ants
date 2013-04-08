@@ -14,7 +14,7 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     
 signals:
-    void clicked(QPoint position);
+    void clicked(QPoint position, Qt::MouseButton button);
 
 
 public slots:

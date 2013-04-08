@@ -14,10 +14,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    graphicsview.cpp
+    graphicsview.cpp \
+    city.cpp
 
 HEADERS  += mainwindow.h \
     graphicsview.h \
-    common.h
+    common.h \
+    tours.h \
+    city.h
 
 FORMS    += mainwindow.ui

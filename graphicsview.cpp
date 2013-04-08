@@ -7,5 +7,5 @@ GraphicsView::GraphicsView(QWidget *parent) :
 
 void GraphicsView::mousePressEvent(QMouseEvent *event)
 {
-    emit clicked(event->pos());
+    emit clicked(event->pos(), event->button());
 }

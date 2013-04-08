@@ -28,13 +28,20 @@ private slots:
     void reset();
     void cityCountChanged(int val);
     void generateClicked();
+    void capitalTourClicked();
+    void berlinTourClicked();
+    void fiftyOneCitiesClicked();
+    void viewClicked(QPoint p, Qt::MouseButton button);
 
 private:
+    void tourHelper(const QList<QPoint> &tour,const QList<int> &opt);
     void setWidgetsEnabled(bool enabled);
     void addCityToScene(QPoint p);
 
     QList<QPoint> cities;
     QSP<QGraphicsScene> scene;
+    QList<QGraphicsItem*> cityGraphicsItems;
+    bool usingPresetTour;
 
     Ui::MainWindow *ui;
 };

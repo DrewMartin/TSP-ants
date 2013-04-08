@@ -102,7 +102,6 @@ void MainWindow::viewClicked(QPoint p, Qt::MouseButton button)
     if (button == Qt::LeftButton) {
         p.setX(qBound(0, p.x(), MAX_X));
         p.setY(qBound(0, p.y(), MAX_Y));
-        qDebug() << p;
         addCityToScene(p);
     } else if (button == Qt::RightButton) {
         int i = 0;
@@ -154,7 +153,6 @@ void MainWindow::addCityToScene(QPoint p)
     int x = p.x()-CITY_RADIUS, y = p.y()-CITY_RADIUS;
     QGraphicsEllipseItem *item = scene->addEllipse(x, y, CITY_RADIUS*2+1, CITY_RADIUS*2+1, pen, brush);
     item->setZValue(CITY_Z);
-    qDebug() << item->rect() << ui->graphicsView->rect() << ui->graphicsView->sceneRect();
     cityGraphicsItems.append(item);
     cities.append(p);
 }

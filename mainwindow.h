@@ -8,7 +8,12 @@
 #include <QGraphicsScene>
 #include <QSharedPointer>
 
+#include "ant.h"
+#include "city.h"
 #include "common.h"
+
+#define INSTANT_FRAME_TIME 100
+#define MOVE_FRAME_TIME 33
 
 namespace Ui {
 class MainWindow;
@@ -32,16 +37,19 @@ private slots:
     void berlinTourClicked();
     void fiftyOneCitiesClicked();
     void viewClicked(QPoint p, Qt::MouseButton button);
+    void timerSlot();
 
 private:
     void tourHelper(const QList<QPoint> &tour,const QList<int> &opt);
     void setWidgetsEnabled(bool enabled);
-    void addCityToScene(QPoint p);
+    void addCityToScene(QPoint p, int expectedNumCities = -1);
+    void updateLoop();
 
-    QList<QPoint> cities;
+    QList<QSP<City> > cities;
     QSP<QGraphicsScene> scene;
-    QList<QGraphicsItem*> cityGraphicsItems;
     bool usingPresetTour;
+    bool running;
+    int frameTime;
 
     Ui::MainWindow *ui;
 };

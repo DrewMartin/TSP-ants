@@ -3,6 +3,8 @@
 #include "tours.h"
 #include <qmath.h>
 #include <QDebug>
+#include <QTime>
+#include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -35,6 +37,14 @@ MainWindow::~MainWindow()
 void MainWindow::start()
 {
     setWidgetsEnabled(false);
+    frameTime = MOVE_FRAME_TIME;
+    if (ui->instantCheckbox->isChecked()) {
+        frameTime = INSTANT_FRAME_TIME;
+        Ant::setInstantMove(true);
+    } else {
+        Ant::setInstantMove(false);
+    }
+
 }
 
 void MainWindow::stop()
@@ -44,7 +54,6 @@ void MainWindow::stop()
 
 void MainWindow::reset()
 {
-    cityGraphicsItems.clear();
     cities.clear();
     scene = QSharedPointer<QGraphicsScene>(new QGraphicsScene(0, 0, MAX_X, MAX_Y));
     ui->graphicsView->setScene(scene.data());
@@ -70,7 +79,7 @@ void MainWindow::generateClicked()
         hash = QString("%1,%2").arg(p.x()).arg(p.y());
         if (!unique.contains(hash)) {
             unique.insert(hash);
-            addCityToScene(p);
+            addCityToScene(p, count);
         }
     }
 }
@@ -90,10 +99,6 @@ void MainWindow::berlinTourClicked()
     tourHelper(berlinTour, berlinOpt);
 }
 
-int sqDist(const QPoint &p1, const QPoint &p2) {
-    return qPow(p1.x() - p2.x(), 2) + qPow(p1.y() - p2.y(), 2);
-}
-
 void MainWindow::viewClicked(QPoint p, Qt::MouseButton button)
 {
     if (usingPresetTour)
@@ -106,18 +111,21 @@ void MainWindow::viewClicked(QPoint p, Qt::MouseButton button)
     } else if (button == Qt::RightButton) {
         int i = 0;
         int maxDist = qPow(CITY_RADIUS+1, 2);
-        QMutableListIterator<QPoint> iter(cities);
+        QMutableListIterator<QSP<City> > iter(cities);
         while (iter.hasNext()) {
-            QPoint cPoint = iter.next();
+            QPoint cPoint = iter.next()->getLocation();
             if (sqDist(p, cPoint) < maxDist) {
-                delete cityGraphicsItems[i];
-                cityGraphicsItems.removeAt(i);
                 iter.remove();
                 i--;
             }
             i++;
         }
     }
+}
+
+void MainWindow::timerSlot()
+{
+    updateLoop();
 }
 
 void MainWindow::tourHelper(const QList<QPoint> &tour, const QList<int> &opt)
@@ -129,7 +137,7 @@ void MainWindow::tourHelper(const QList<QPoint> &tour, const QList<int> &opt)
 
     QPoint curr, next;
     for (int i = 0; i < tour.length(); i++) {
-        addCityToScene(tour.at(i));
+        addCityToScene(tour.at(i), tour.length());
         curr = tour.at(opt.at(i));
         next = tour.at(opt.at((i+1) % tour.length()));
         scene->addLine(curr.x(), curr.y(), next.x(), next.y(), pen)->setZValue(LINE_Z);
@@ -144,15 +152,29 @@ void MainWindow::setWidgetsEnabled(bool enabled)
     ui->optionsGroups->setEnabled(enabled);
     ui->tourGroup->setEnabled(enabled);
     ui->stopButton->setEnabled(!enabled);
+    running = !enabled;
 }
 
-void MainWindow::addCityToScene(QPoint p)
+void MainWindow::addCityToScene(QPoint p, int expectedNumCities)
 {
-    QPen pen(QColor(CITY_COLOR));
-    QBrush brush(QColor(CITY_COLOR),Qt::SolidPattern);
-    int x = p.x()-CITY_RADIUS, y = p.y()-CITY_RADIUS;
-    QGraphicsEllipseItem *item = scene->addEllipse(x, y, CITY_RADIUS*2+1, CITY_RADIUS*2+1, pen, brush);
-    item->setZValue(CITY_Z);
-    cityGraphicsItems.append(item);
-    cities.append(p);
+    if (expectedNumCities < 0) {
+        for (int i = 0; i < cities.length(); i++) {
+            cities.at(i)->addCity();
+        }
+        expectedNumCities = cities.length() + 1;
+    }
+    QSP<City> city(new City(p, expectedNumCities));
+    cities.append(city);
+    scene->addItem(city->getGraphicsItem());
+}
+
+void MainWindow::updateLoop()
+{
+    if (!running)
+        return;
+
+    QTime timer;
+    timer.start();
+
+    QTimer::singleShot(qMax(0, frameTime - timer.elapsed()), this, SLOT(timerSlot()));
 }

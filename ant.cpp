@@ -132,16 +132,20 @@ void Ant::chooseNextCity(QList<QSP<City> > &cities)
         cityProb[i] = 0;
         if (!history.at(i)) {
             edge = cities.at(fromCity)->edgeForNeighbour(i);
-            cityProb[i] = 1.0 * (1.0 + edge->getPheromone()) / cities.at(fromCity)->distance(i);
+//            cityProb[i] = (1.0 + edge->getPheromone()) / (cities.at(fromCity)->distance(i) * MAX_PHEROMONE);
+            cityProb[i] = qPow((1.0 + edge->getPheromone())/MAX_PHEROMONE, PHEROMONE_WEIGHT) * qPow(1.0/cities.at(fromCity)->distance(i), DISTANCE_WEIGHT);
             total += cityProb[i];
         }
     }
 
-    //pick a neighbour proportional to its inverse distance and pheromone
-    total -= 0.000001;
-    double random = ((double)qrand() / RAND_MAX) * total;
     for (int i = 0; i < cities.length(); i++) {
-        if (random < cityProb[i] && i != fromCity) {
+        cityProb[i] /= total;
+    }
+
+    //pick a neighbour proportional to its inverse distance and pheromone
+    double random = ((double)qrand() / RAND_MAX);
+    for (int i = 0; i < cities.length(); i++) {
+        if (random < cityProb[i] && !history.at(i)) {
             toCity = i;
             break;
         }

@@ -26,6 +26,9 @@
 #define ANT_SPEED 5.0
 #define ANT_PROPORTIONAL_STEPS 25
 
+#define PHEROMONE_WEIGHT 0.5
+#define DISTANCE_WEIGHT 0.5
+
 #define QSP QSharedPointer
 #define LOC_HELPER(loc,rad) loc.x()-rad, loc.y()-rad, rad*2+1, rad*2+1
 

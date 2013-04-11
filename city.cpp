@@ -1,52 +1,70 @@
 #include "city.h"
 #include <qmath.h>
 
-#define CHECK_CITY(num) if (num < 0 || num >= edgePheromones.length()) throw "Bad city"
+#define CHECK_CITY(num) if (num < 0 || num >= edges.length()) throw "Bad city"
 
-City::City(QPoint &location, int cityCount) :
+City::City(QPoint location, int myIndex, int cityCount) :
     Entity(location),
-    ellipse(NULL)
+    ellipse(NULL),
+    index(myIndex)
 {
-    for (int i = 0; i < cityCount; i++)
-        edgePheromones.append(0);
+    for (int i = 0; i < cityCount; i++) {
+        edges.append(QSP<Edge>());
+    }
 }
 
 void City::addCity()
 {
-    edgePheromones.append(0);
+    edges.append(QSP<Edge>());
 }
 
 void City::removeCity(int num)
 {
     CHECK_CITY(num);
 
-    edgePheromones.removeAt(num);
+    if (num < index)
+        index--;
+
+    edges.removeAt(num);
 }
 
 
-int City::pheromoneForNeighbour(int num)
+QSP<Edge> City::edgeForNeighbour(int num)
 {
     CHECK_CITY(num);
 
-    return edgePheromones.at(num);
+    return edges.at(num);
 }
 
-double City::distance(QSharedPointer<City> other)
+double City::distance(QSP<City> other)
 {
     return dist(location, other->getLocation());
 }
 
-void City::addPheromone(int city, int amount)
+void City::addPheromone(int city, double amount)
 {
     CHECK_CITY(city);
-    edgePheromones[city] = edgePheromones[city] + amount;
+    edges.at(city)->addPheromone(amount);
+}
+
+void City::addEdge(QSP<Edge> edge, int neighbour)
+{
+    CHECK_CITY(neighbour);
+
+    edges[neighbour] = edge;
 }
 
 void City::update()
 {
-    for (int i = 0; i < edgePheromones.length(); i++)
-        edgePheromones[i] = edgePheromones[i] * DECAY_RATE;
+    for (int i = 0; i < index; i++)
+        edges.at(i)->update();
 
+}
+
+void City::reset()
+{
+    for (int i = 0; i < index; i++)
+        edges.at(i)->reset();
 }
 
 QGraphicsItem *City::getGraphicsItem()

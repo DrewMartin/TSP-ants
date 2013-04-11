@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     graphicsview.cpp \
     entity.cpp \
     ant.cpp \
-    city.cpp
+    city.cpp \
+    edge.cpp
 
 HEADERS  += mainwindow.h \
     graphicsview.h \
@@ -25,6 +26,7 @@ HEADERS  += mainwindow.h \
     tours.h \
     entity.h \
     ant.h \
-    city.h
+    city.h \
+    edge.h
 
 FORMS    += mainwindow.ui

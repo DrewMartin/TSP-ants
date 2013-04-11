@@ -12,9 +12,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     reset();
-    addCityToScene(QPoint(0, 0));
 
     cityCountChanged(ui->cityCountSlider->value());
+    decayRateChanged(ui->decayRateSlider->value());
 
     setWidgetsEnabled(true);
 
@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->berlinTourButton, SIGNAL(clicked()), SLOT(berlinTourClicked()));
     connect(ui->generateButton, SIGNAL(clicked()), SLOT(generateClicked()));
     connect(ui->graphicsView, SIGNAL(clicked(QPoint,Qt::MouseButton)), SLOT(viewClicked(QPoint,Qt::MouseButton)));
+    connect(ui->decayRateSlider, SIGNAL(valueChanged(int)), SLOT(decayRateChanged(int)));
 }
 
 MainWindow::~MainWindow()
@@ -36,6 +37,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::start()
 {
+    ants.clear();
     setWidgetsEnabled(false);
     frameTime = MOVE_FRAME_TIME;
     if (ui->instantCheckbox->isChecked()) {
@@ -45,6 +47,15 @@ void MainWindow::start()
         Ant::setInstantMove(false);
     }
 
+    QSP<Ant> ant;
+
+    for (int i = 0; i < cities.length(); i++) {
+        ant = QSP<Ant>(new Ant(cities[i], i, cities.length()));
+        ants.append(ant);
+        scene->addItem(ant->getGraphicsItem());
+        cities.at(i)->reset();
+    }
+    updateLoop();
 }
 
 void MainWindow::stop()
@@ -54,6 +65,7 @@ void MainWindow::stop()
 
 void MainWindow::reset()
 {
+    ants.clear();
     cities.clear();
     scene = QSharedPointer<QGraphicsScene>(new QGraphicsScene(0, 0, MAX_X, MAX_Y));
     ui->graphicsView->setScene(scene.data());
@@ -63,6 +75,12 @@ void MainWindow::reset()
 void MainWindow::cityCountChanged(int val)
 {
     ui->cityCountLabel->setText(QString::number(val));
+}
+
+void MainWindow::decayRateChanged(int val)
+{
+    Edge::setDecayRate(val / 100.0);
+    ui->decayRateLabel->setText(QString::number(val / 100.0, 'f', 2));
 }
 
 void MainWindow::generateClicked()
@@ -108,14 +126,25 @@ void MainWindow::viewClicked(QPoint p, Qt::MouseButton button)
         p.setX(qBound(0, p.x(), MAX_X));
         p.setY(qBound(0, p.y(), MAX_Y));
         addCityToScene(p);
+        if (running) {
+            for (int i = 0; i < ants.length(); i++)
+                ants.at(i)->addCity();
+        }
     } else if (button == Qt::RightButton) {
         int i = 0;
         int maxDist = qPow(CITY_RADIUS+1, 2);
         QMutableListIterator<QSP<City> > iter(cities);
+        QMutableListIterator<QSP<Ant> > antIter(ants);
         while (iter.hasNext()) {
             QPoint cPoint = iter.next()->getLocation();
             if (sqDist(p, cPoint) < maxDist) {
                 iter.remove();
+                antIter.toFront();
+                while (antIter.hasNext()) {
+                    if (antIter.next()->removeCity(i)) {
+                        antIter.remove();
+                    }
+                }
                 i--;
             }
             i++;
@@ -151,7 +180,10 @@ void MainWindow::setWidgetsEnabled(bool enabled)
     ui->resetButton->setEnabled(enabled);
     ui->optionsGroups->setEnabled(enabled);
     ui->tourGroup->setEnabled(enabled);
+    ui->decayGroup->setEnabled(enabled);
+
     ui->stopButton->setEnabled(!enabled);
+
     running = !enabled;
 }
 
@@ -163,7 +195,14 @@ void MainWindow::addCityToScene(QPoint p, int expectedNumCities)
         }
         expectedNumCities = cities.length() + 1;
     }
-    QSP<City> city(new City(p, expectedNumCities));
+    QSP<City> city(new City(p, cities.length(), expectedNumCities));
+    QSP<Edge> edge;
+    for (int i = 0; i < cities.length(); i++) {
+        edge = QSP<Edge>(new Edge(cities.at(i)->getLocation(), p));
+        scene->addItem(edge->getGraphicsItem());
+        city->addEdge(edge, i);
+        cities.at(i)->addEdge(edge, cities.length());
+    }
     cities.append(city);
     scene->addItem(city->getGraphicsItem());
 }
@@ -176,5 +215,12 @@ void MainWindow::updateLoop()
     QTime timer;
     timer.start();
 
+    for (int i = 0; i < cities.length(); i++)
+        cities.at(i)->update();
+
+    for (int i = 0; i < ants.length(); i++)
+        ants.at(i)->update(cities);
+
+    qDebug() << "time elapsed" << timer.elapsed();
     QTimer::singleShot(qMax(0, frameTime - timer.elapsed()), this, SLOT(timerSlot()));
 }

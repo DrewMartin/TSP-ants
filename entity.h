@@ -10,10 +10,10 @@
 class Entity
 {
 public:
-    Entity(QPoint &location);
+    Entity(QPoint location);
     virtual ~Entity();
 
-    const QPoint &getLocation();
+    QPoint &getLocation();
     virtual QGraphicsItem *getGraphicsItem() = 0;
 
 protected:

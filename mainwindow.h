@@ -32,6 +32,7 @@ private slots:
     void stop();
     void reset();
     void cityCountChanged(int val);
+    void decayRateChanged(int val);
     void generateClicked();
     void capitalTourClicked();
     void berlinTourClicked();
@@ -47,6 +48,8 @@ private:
 
     QList<QSP<City> > cities;
     QSP<QGraphicsScene> scene;
+    QList<QSP<Ant> > ants;
+    QList<QSP<QGraphicsItem> > pheromoneLines;
     bool usingPresetTour;
     bool running;
     int frameTime;

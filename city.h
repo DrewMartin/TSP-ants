@@ -3,28 +3,30 @@
 
 #include "entity.h"
 #include <QList>
-
-#define DECAY_RATE 0.95
+#include "edge.h"
 
 class City : public Entity
 {
 public:
-    City(QPoint &location, int cityCount);
+    City(QPoint location, int myIndex, int cityCount);
 
-    int pheromoneForNeighbour(int num);
+    QSP<Edge> edgeForNeighbour(int num);
     double distance(QSP<City> other);
 
     void addCity();
     void removeCity(int num);
-    void addPheromone(int city, int amount);
+    void addPheromone(int city, double amount);
+    void addEdge(QSP<Edge> edge, int neighbour);
 
     void update();
+    void reset();
 
     virtual QGraphicsItem *getGraphicsItem();
 
 private:
     QGraphicsEllipseItem *ellipse;
-    QList<int> edgePheromones;
+    QList<QSP<Edge> > edges;
+    int index;
 };
 
 #endif // CITY_H

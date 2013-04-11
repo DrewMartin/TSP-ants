@@ -11,11 +11,16 @@
 #define MAX_GEN_X (MAX_X - 10)
 #define MAX_GEN_Y (MAX_Y - 10)
 
+#define PHEROMONE_ADD 25.0
+#define MAX_PHEROMONE 100.0
+#define PHEROMONE_DEFAULT_DECAY_RATE 0.5
 #define CITY_Z 50
 #define LINE_Z 25
 #define ANT_Z 75
+#define PHEROMONE_Z 10
 #define CITY_COLOR "#ff9c00"
 #define ANT_COLOR "#ff0000"
+#define EDGE_COLOR "#00ff00"
 
 #define QSP QSharedPointer
 #define LOC_HELPER(loc,rad) loc.x()-rad, loc.y()-rad, rad*2+1, rad*2+1

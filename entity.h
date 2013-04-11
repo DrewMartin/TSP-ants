@@ -1,7 +1,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include <QPoint>
+#include <QPointF>
 #include <QGraphicsItem>
 #include <QPen>
 #include <QBrush>
@@ -10,14 +10,14 @@
 class Entity
 {
 public:
-    Entity(QPoint location);
+    Entity(QPointF location);
     virtual ~Entity();
 
-    QPoint &getLocation();
+    QPointF &getLocation();
     virtual QGraphicsItem *getGraphicsItem() = 0;
 
 protected:
-    QPoint location;
+    QPointF location;
 };
 
 #endif // ENTITY_H

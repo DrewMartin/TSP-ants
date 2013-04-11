@@ -13,7 +13,7 @@ public:
     Ant(QSharedPointer<City> &startingCity, int index, int numCities);
     virtual ~Ant();
 
-    static void setInstantMove(bool instant);
+    static void setProportionalMove(bool proportional);
     virtual QGraphicsItem *getGraphicsItem();
     void update(QList<QSP<City> > &cities);
 
@@ -21,13 +21,16 @@ public:
     void addCity();
 
 protected:
-    void updateEllipse(const QPoint &newPoint);
+    void updateEllipse();
+    void chooseNextCity(QList<QSP<City> > &cities);
 
     QGraphicsEllipseItem *ellipse;
     QList<bool> history;
-    int currentCity;
+    int fromCity;
+    int toCity;
+    double speed;
 
-    static bool instantMove;
+    static bool proportionalMove;
 };
 
 #endif // ANT_H

@@ -8,7 +8,8 @@
 class City : public Entity
 {
 public:
-    City(QPoint location, int myIndex, int cityCount);
+    City(QPointF location, int myIndex, int cityCount);
+    virtual ~City();
 
     QSP<Edge> edgeForNeighbour(int num);
     double distance(QSP<City> other);

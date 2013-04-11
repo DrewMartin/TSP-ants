@@ -7,7 +7,7 @@
 class Edge
 {
 public:
-    Edge(QPoint p1, QPoint p2);
+    Edge(QPointF p1, QPointF p2);
     ~Edge();
 
     void addPheromone(double amount);

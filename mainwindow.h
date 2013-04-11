@@ -12,8 +12,7 @@
 #include "city.h"
 #include "common.h"
 
-#define INSTANT_FRAME_TIME 100
-#define MOVE_FRAME_TIME 33
+
 
 namespace Ui {
 class MainWindow;
@@ -52,7 +51,6 @@ private:
     QList<QSP<QGraphicsItem> > pheromoneLines;
     bool usingPresetTour;
     bool running;
-    int frameTime;
 
     Ui::MainWindow *ui;
 };

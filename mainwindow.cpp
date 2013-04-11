@@ -13,6 +13,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     reset();
 
+    addCityToScene(QPoint(25, 50));
+    addCityToScene(QPoint(25, 100));
+
     cityCountChanged(ui->cityCountSlider->value());
     decayRateChanged(ui->decayRateSlider->value());
 
@@ -28,6 +31,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->generateButton, SIGNAL(clicked()), SLOT(generateClicked()));
     connect(ui->graphicsView, SIGNAL(clicked(QPoint,Qt::MouseButton)), SLOT(viewClicked(QPoint,Qt::MouseButton)));
     connect(ui->decayRateSlider, SIGNAL(valueChanged(int)), SLOT(decayRateChanged(int)));
+
+    ui->proportionalCheckbox->setToolTip("When selected, each ant takes the same amount of time to travel between cities regardless of distance");
+    ui->graphicsView->setToolTip("Left click to place a new city. Right click to remove any city under the mouse cursor.");
 }
 
 MainWindow::~MainWindow()
@@ -39,12 +45,10 @@ void MainWindow::start()
 {
     ants.clear();
     setWidgetsEnabled(false);
-    frameTime = MOVE_FRAME_TIME;
-    if (ui->instantCheckbox->isChecked()) {
-        frameTime = INSTANT_FRAME_TIME;
-        Ant::setInstantMove(true);
+    if (ui->proportionalCheckbox->isChecked()) {
+        Ant::setProportionalMove(true);
     } else {
-        Ant::setInstantMove(false);
+        Ant::setProportionalMove(false);
     }
 
     QSP<Ant> ant;
@@ -121,6 +125,7 @@ void MainWindow::viewClicked(QPoint p, Qt::MouseButton button)
 {
     if (usingPresetTour)
         return;
+    QSP<Ant> ant;
 
     if (button == Qt::LeftButton) {
         p.setX(qBound(0, p.x(), MAX_X));
@@ -129,6 +134,10 @@ void MainWindow::viewClicked(QPoint p, Qt::MouseButton button)
         if (running) {
             for (int i = 0; i < ants.length(); i++)
                 ants.at(i)->addCity();
+            ant = QSP<Ant>(new Ant(cities.last(), cities.length()-1, cities.length()));
+            ants.append(ant);
+            scene->addItem(ant->getGraphicsItem());
+
         }
     } else if (button == Qt::RightButton) {
         int i = 0;
@@ -136,7 +145,7 @@ void MainWindow::viewClicked(QPoint p, Qt::MouseButton button)
         QMutableListIterator<QSP<City> > iter(cities);
         QMutableListIterator<QSP<Ant> > antIter(ants);
         while (iter.hasNext()) {
-            QPoint cPoint = iter.next()->getLocation();
+            QPointF cPoint = iter.next()->getLocation();
             if (sqDist(p, cPoint) < maxDist) {
                 iter.remove();
                 antIter.toFront();
@@ -148,6 +157,20 @@ void MainWindow::viewClicked(QPoint p, Qt::MouseButton button)
                 i--;
             }
             i++;
+        }
+
+        if (running) {
+
+            while (ants.length() < cities.length()) {
+                i = qrand() % cities.length();
+                ant = QSP<Ant>(new Ant(cities[i], i, cities.length()));
+                scene->addItem(ant->getGraphicsItem());
+                ants.append(ant);
+            }
+
+            while (ants.length() >= cities.length()) {
+                ants.pop_back();
+            }
         }
     }
 }
@@ -161,7 +184,9 @@ void MainWindow::tourHelper(const QList<QPoint> &tour, const QList<int> &opt)
 {
     reset();
     usingPresetTour = true;
-    QBrush brush(Qt::black);
+    QColor color(Qt::black);
+    color.setAlphaF(0.5);
+    QBrush brush(color);
     QPen pen(brush, 0);
 
     QPoint curr, next;
@@ -221,6 +246,6 @@ void MainWindow::updateLoop()
     for (int i = 0; i < ants.length(); i++)
         ants.at(i)->update(cities);
 
-    qDebug() << "time elapsed" << timer.elapsed();
-    QTimer::singleShot(qMax(0, frameTime - timer.elapsed()), this, SLOT(timerSlot()));
+//    qDebug() << "time elapsed" << timer.elapsed();
+    QTimer::singleShot(qMax(0, FRAME_TIME - timer.elapsed()), this, SLOT(timerSlot()));
 }

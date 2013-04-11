@@ -4,7 +4,7 @@
 
 double Edge::decayRate = PHEROMONE_DEFAULT_DECAY_RATE;
 
-Edge::Edge(QPoint p1, QPoint p2) :
+Edge::Edge(QPointF p1, QPointF p2) :
     pheromone(0.0),
     color(EDGE_COLOR)
 {
@@ -31,10 +31,8 @@ void Edge::update()
     if (pheromone < 0.5)
         pheromone = 0.0;
 
-    if (old != pheromone)
+    if (old > 0.0)
         updateLine();
-    else
-        old = 1234.0;
 }
 
 void Edge::reset()

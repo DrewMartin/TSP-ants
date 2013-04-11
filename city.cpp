@@ -3,14 +3,24 @@
 
 #define CHECK_CITY(num) if (num < 0 || num >= edges.length()) throw "Bad city"
 
-City::City(QPoint location, int myIndex, int cityCount) :
+City::City(QPointF location, int myIndex, int cityCount) :
     Entity(location),
-    ellipse(NULL),
     index(myIndex)
 {
+
+    ellipse = new QGraphicsEllipseItem(LOC_HELPER(location,CITY_RADIUS));
+    ellipse->setPen(QPen(CITY_COLOR));
+    ellipse->setBrush(QBrush(CITY_COLOR));
+    ellipse->setZValue(CITY_Z);
+
     for (int i = 0; i < cityCount; i++) {
         edges.append(QSP<Edge>());
     }
+}
+
+City::~City()
+{
+    delete ellipse;
 }
 
 void City::addCity()
@@ -69,11 +79,5 @@ void City::reset()
 
 QGraphicsItem *City::getGraphicsItem()
 {
-    if (!ellipse) {
-        ellipse = new QGraphicsEllipseItem(LOC_HELPER(location,CITY_RADIUS));
-        ellipse->setPen(QPen(CITY_COLOR));
-        ellipse->setBrush(QBrush(CITY_COLOR));
-        ellipse->setZValue(CITY_Z);
-    }
     return ellipse;
 }

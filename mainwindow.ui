@@ -37,9 +37,12 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="QCheckBox" name="instantCheckbox">
+          <widget class="QCheckBox" name="proportionalCheckbox">
+           <property name="toolTip">
+            <string comment="zxcv" extracomment="asdf"/>
+           </property>
            <property name="text">
-            <string>Instant Travel</string>
+            <string>Proportional Movement Speed</string>
            </property>
           </widget>
          </item>

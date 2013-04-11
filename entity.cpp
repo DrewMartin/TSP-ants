@@ -1,6 +1,6 @@
 #include "entity.h"
 
-Entity::Entity(QPoint location) :
+Entity::Entity(QPointF location) :
     location(location)
 {
 }
@@ -9,7 +9,7 @@ Entity::~Entity()
 {
 }
 
-QPoint &Entity::getLocation()
+QPointF &Entity::getLocation()
 {
     return location;
 }

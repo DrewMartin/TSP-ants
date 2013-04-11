@@ -12,7 +12,7 @@ public:
     virtual ~City();
 
     QSP<Edge> edgeForNeighbour(int num);
-    double distance(QSP<City> other);
+    double distance(int other);
 
     void addCity();
     void removeCity(int num);

@@ -8,6 +8,7 @@ Edge::Edge(QPointF p1, QPointF p2) :
     pheromone(0.0),
     color(EDGE_COLOR)
 {
+    length = dist(p1, p2);
     line = new QGraphicsLineItem(p1.x(), p1.y(), p2.x(), p2.y());
     line->setZValue(PHEROMONE_Z);
     updateLine();
@@ -39,6 +40,11 @@ void Edge::reset()
 {
     pheromone = 0.0;
     updateLine();
+}
+
+double Edge::getLength()
+{
+    return length;
 }
 
 QGraphicsItem *Edge::getGraphicsItem()

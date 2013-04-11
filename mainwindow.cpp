@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     addCityToScene(QPoint(25, 100));
 
     cityCountChanged(ui->cityCountSlider->value());
-    decayRateChanged(ui->decayRateSlider->value());
+//    decayRateChanged(ui->decayRateSlider->value());
 
     setWidgetsEnabled(true);
 
@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->generateButton, SIGNAL(clicked()), SLOT(generateClicked()));
     connect(ui->graphicsView, SIGNAL(clicked(QPoint,Qt::MouseButton)), SLOT(viewClicked(QPoint,Qt::MouseButton)));
     connect(ui->decayRateSlider, SIGNAL(valueChanged(int)), SLOT(decayRateChanged(int)));
+    ui->decayRateSlider->setValue(PHEROMONE_DEFAULT_DECAY_RATE);
 
     ui->proportionalCheckbox->setToolTip("When selected, each ant takes the same amount of time to travel between cities regardless of distance");
     ui->graphicsView->setToolTip("Left click to place a new city. Right click to remove any city under the mouse cursor.");
@@ -83,8 +84,9 @@ void MainWindow::cityCountChanged(int val)
 
 void MainWindow::decayRateChanged(int val)
 {
-    Edge::setDecayRate(val / 100.0);
-    ui->decayRateLabel->setText(QString::number(val / 100.0, 'f', 2));
+    double decay = 0.9 + val/1000.0;
+    Edge::setDecayRate(decay);
+    ui->decayRateLabel->setText(QString::number(decay, 'f', 3));
 }
 
 void MainWindow::generateClicked()
@@ -186,10 +188,9 @@ void MainWindow::tourHelper(const QList<QPoint> &tour, const QList<int> &opt)
 {
     reset();
     usingPresetTour = true;
-    QColor color(Qt::black);
-    color.setAlphaF(0.5);
-    QBrush brush(color);
+    QBrush brush(Qt::black);
     QPen pen(brush, 0);
+    pen.setStyle(Qt::DotLine);
 
     QPoint curr, next;
     for (int i = 0; i < tour.length(); i++) {

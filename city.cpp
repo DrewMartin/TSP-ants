@@ -46,9 +46,11 @@ QSP<Edge> City::edgeForNeighbour(int num)
     return edges.at(num);
 }
 
-double City::distance(QSP<City> other)
+double City::distance(int other)
 {
-    return dist(location, other->getLocation());
+    if (other == index)
+        return 0;
+    return edges.at(other)->getLength();
 }
 
 void City::addPheromone(int city, double amount)

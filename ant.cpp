@@ -132,7 +132,7 @@ void Ant::chooseNextCity(QList<QSP<City> > &cities)
         cityProb[i] = 0;
         if (!history.at(i)) {
             edge = cities.at(fromCity)->edgeForNeighbour(i);
-            cityProb[i] = 1.0 * (1.0 + edge->getPheromone()) / cities.at(fromCity)->distance(cities.at(i));
+            cityProb[i] = 1.0 * (1.0 + edge->getPheromone()) / cities.at(fromCity)->distance(i);
             total += cityProb[i];
         }
     }
@@ -150,7 +150,7 @@ void Ant::chooseNextCity(QList<QSP<City> > &cities)
 
     //ant speed gets set based on distance to next city if proportional move is true
     if (proportionalMove) {
-        speed = cities.at(fromCity)->distance(cities.at(toCity)) / ANT_PROPORTIONAL_STEPS;
+        speed = cities.at(fromCity)->distance(toCity) / ANT_PROPORTIONAL_STEPS;
     }
 
     if (fromCity == toCity) {

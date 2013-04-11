@@ -13,6 +13,7 @@ public:
     void addPheromone(double amount);
     void update();
     void reset();
+    double getLength();
     QGraphicsItem* getGraphicsItem();
 
     double getPheromone();
@@ -23,6 +24,7 @@ private:
     QGraphicsLineItem *line;
     double pheromone;
     QColor color;
+    double length;
 
     void updateLine();
 

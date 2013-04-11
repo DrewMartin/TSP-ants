@@ -154,6 +154,8 @@ void MainWindow::viewClicked(QPoint p, Qt::MouseButton button)
                         antIter.remove();
                     }
                 }
+                for (int j = 0; j < cities.length(); j++)
+                    cities.at(j)->removeCity(i);
                 i--;
             }
             i++;
@@ -168,7 +170,7 @@ void MainWindow::viewClicked(QPoint p, Qt::MouseButton button)
                 ants.append(ant);
             }
 
-            while (ants.length() >= cities.length()) {
+            while (ants.length() > cities.length()) {
                 ants.pop_back();
             }
         }

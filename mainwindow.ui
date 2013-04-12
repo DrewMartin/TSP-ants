@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>773</width>
-    <height>581</height>
+    <height>635</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout">
+   <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
@@ -31,18 +31,115 @@
        </spacer>
       </item>
       <item>
-       <widget class="QGroupBox" name="optionsGroups">
+       <widget class="QGroupBox" name="importanceGroup">
         <property name="title">
-         <string>Options</string>
+         <string>Pheromone/Distance Importance</string>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="QCheckBox" name="proportionalCheckbox">
-           <property name="toolTip">
-            <string comment="zxcv" extracomment="asdf"/>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Pheromone</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QSlider" name="pheromoneImportanceSlider">
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="value">
+            <number>50</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLabel" name="pheromoneImportanceLabel">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>24</width>
+             <height>0</height>
+            </size>
            </property>
            <property name="text">
-            <string>Proportional Movement Speed</string>
+            <string>xxxx</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Distance</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QSlider" name="distanceImportanceSlider">
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="value">
+            <number>50</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLabel" name="distanceImportanceLabel">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>24</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>xxxx</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
+         <string>Ant Speed</string>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QSlider" name="speedSlider">
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="value">
+            <number>5</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="speedLabel">
+           <property name="text">
+            <string>xxxx</string>
            </property>
           </widget>
          </item>
@@ -58,10 +155,10 @@
          <item>
           <widget class="QSlider" name="decayRateSlider">
            <property name="minimum">
-            <number>0</number>
+            <number>1</number>
            </property>
            <property name="value">
-            <number>95</number>
+            <number>50</number>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -108,6 +205,12 @@
              </property>
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="invertedControls">
+              <bool>false</bool>
+             </property>
+             <property name="tickPosition">
+              <enum>QSlider::NoTicks</enum>
              </property>
             </widget>
            </item>
@@ -187,7 +290,7 @@
       </item>
      </layout>
     </item>
-    <item row="0" column="1" rowspan="2">
+    <item row="0" column="1">
      <widget class="GraphicsView" name="graphicsView">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">

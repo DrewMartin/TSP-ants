@@ -13,11 +13,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     reset();
 
-    addCityToScene(QPoint(25, 50));
-    addCityToScene(QPoint(25, 100));
-
     cityCountChanged(ui->cityCountSlider->value());
-//    decayRateChanged(ui->decayRateSlider->value());
+    pheromoneImportanceChanged(ui->pheromoneImportanceSlider->value());
+    distanceImportanceChanged(ui->distanceImportanceSlider->value());
 
     setWidgetsEnabled(true);
 
@@ -31,9 +29,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->generateButton, SIGNAL(clicked()), SLOT(generateClicked()));
     connect(ui->graphicsView, SIGNAL(clicked(QPoint,Qt::MouseButton)), SLOT(viewClicked(QPoint,Qt::MouseButton)));
     connect(ui->decayRateSlider, SIGNAL(valueChanged(int)), SLOT(decayRateChanged(int)));
-    ui->decayRateSlider->setValue(PHEROMONE_DEFAULT_DECAY_RATE);
+    connect(ui->speedSlider, SIGNAL(valueChanged(int)), SLOT(speedChanged(int)));
+    connect(ui->pheromoneImportanceSlider, SIGNAL(valueChanged(int)), SLOT(pheromoneImportanceChanged(int)));
+    connect(ui->distanceImportanceSlider, SIGNAL(valueChanged(int)), SLOT(distanceImportanceChanged(int)));
 
-    ui->proportionalCheckbox->setToolTip("When selected, each ant takes the same amount of time to travel between cities regardless of distance");
+    ui->decayRateSlider->setValue(PHEROMONE_DEFAULT_DECAY_RATE);
+    ui->speedSlider->setValue(ANT_SPEED);
+    speedChanged(ui->speedSlider->value());
+    decayRateChanged(ui->decayRateSlider->value());
+
     ui->graphicsView->setToolTip("Left click to place a new city. Right click to remove any city under the mouse cursor.");
 }
 
@@ -46,11 +50,6 @@ void MainWindow::start()
 {
     ants.clear();
     setWidgetsEnabled(false);
-    if (ui->proportionalCheckbox->isChecked()) {
-        Ant::setProportionalMove(true);
-    } else {
-        Ant::setProportionalMove(false);
-    }
 
     QSP<Ant> ant;
 
@@ -84,9 +83,28 @@ void MainWindow::cityCountChanged(int val)
 
 void MainWindow::decayRateChanged(int val)
 {
-    double decay = 0.9 + val/1000.0;
+    double decay = val/100.0;
     Edge::setDecayRate(decay);
-    ui->decayRateLabel->setText(QString::number(decay, 'f', 3));
+    ui->decayRateLabel->setText(QString::number(decay, 'f', 2));
+}
+
+void MainWindow::speedChanged(int val)
+{
+    ui->speedLabel->setText(QString::number(val));
+    Ant::setSpeed(val);
+}
+
+void MainWindow::pheromoneImportanceChanged(int val)
+{
+    Ant::setPheromoneImportance(val);
+    ui->pheromoneImportanceLabel->setText(QString::number(val));
+}
+
+
+void MainWindow::distanceImportanceChanged(int val)
+{
+    Ant::setDistanceImportance(val);
+    ui->distanceImportanceLabel->setText(QString::number(val));
 }
 
 void MainWindow::generateClicked()
@@ -206,9 +224,9 @@ void MainWindow::setWidgetsEnabled(bool enabled)
     ui->generateCitiesGroup->setEnabled(enabled);
     ui->startButton->setEnabled(enabled);
     ui->resetButton->setEnabled(enabled);
-    ui->optionsGroups->setEnabled(enabled);
     ui->tourGroup->setEnabled(enabled);
     ui->decayGroup->setEnabled(enabled);
+    ui->importanceGroup->setEnabled(enabled);
 
     ui->stopButton->setEnabled(!enabled);
 
@@ -242,12 +260,43 @@ void MainWindow::updateLoop()
 
     QTime timer;
     timer.start();
+    bool allDone = true;
+    int i;
 
-    for (int i = 0; i < cities.length(); i++)
-        cities.at(i)->update();
+    for (i = 0; i < ants.length(); i++)
+        allDone &= ants.at(i)->update(cities);
 
-    for (int i = 0; i < ants.length(); i++)
-        ants.at(i)->update(cities);
+    if (allDone && cities.length() > 1) {
+        for (i = 0; i < cities.length(); i++)
+            cities.at(i)->doDecay();
+
+        int shortTourIndex = -1;
+        double bestPheromone = 0.0, shortestTour = LONG_LONG_MAX;
+        BestDistancePheromone curr;
+        for (i = 0; i < ants.length(); i++) {
+            curr = ants.at(i)->addPheromoneToTour(cities);
+            if (curr.first < shortestTour) {
+                shortestTour = curr.first;
+                shortTourIndex = i;
+            }
+            if (curr.second > bestPheromone)
+                bestPheromone = curr.second;
+        }
+
+        QList<int> bestTour = ants.at(shortTourIndex)->getTour();
+        for (i = 1; i < bestTour.length(); i++) {
+            cities.at(bestTour.at(i))->edgeForNeighbour(bestTour.at(i-1))->setBest();
+        }
+        cities.at(bestTour.at(0))->edgeForNeighbour(bestTour.last())->setBest();
+
+        for (i = 0; i < cities.length(); i++)
+            cities.at(i)->updateLines(bestPheromone);
+
+        for (i = 0; i < ants.length(); i++) {
+            ants.at(i)->resetTour();
+        }
+
+    }
 
 //    qDebug() << "time elapsed" << timer.elapsed();
     QTimer::singleShot(qMax(0, FRAME_TIME - timer.elapsed()), this, SLOT(timerSlot()));

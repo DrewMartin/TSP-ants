@@ -16,10 +16,11 @@ public:
 
     void addCity();
     void removeCity(int num);
-    void addPheromone(int city, double amount);
+    double addPheromone(int city, double amount);
     void addEdge(QSP<Edge> edge, int neighbour);
+    void updateLines(double best);
 
-    void update();
+    void doDecay();
     void reset();
 
     virtual QGraphicsItem *getGraphicsItem();

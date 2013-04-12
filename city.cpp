@@ -53,10 +53,11 @@ double City::distance(int other)
     return edges.at(other)->getLength();
 }
 
-void City::addPheromone(int city, double amount)
+double City::addPheromone(int city, double amount)
 {
     CHECK_CITY(city);
-    edges.at(city)->addPheromone(amount);
+
+    return edges.at(city)->addPheromone(amount);
 }
 
 void City::addEdge(QSP<Edge> edge, int neighbour)
@@ -66,10 +67,16 @@ void City::addEdge(QSP<Edge> edge, int neighbour)
     edges[neighbour] = edge;
 }
 
-void City::update()
+void City::updateLines(double best)
 {
     for (int i = 0; i < index; i++)
-        edges.at(i)->update();
+        edges.at(i)->updateLine(best);
+}
+
+void City::doDecay()
+{
+    for (int i = 0; i < index; i++)
+        edges.at(i)->doDecay();
 
 }
 

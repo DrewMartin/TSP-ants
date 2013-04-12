@@ -10,9 +10,10 @@ public:
     Edge(QPointF p1, QPointF p2);
     ~Edge();
 
-    void addPheromone(double amount);
-    void update();
+    double addPheromone(double amount);
+    void doDecay();
     void reset();
+    void setBest();
     double getLength();
     QGraphicsItem* getGraphicsItem();
 
@@ -20,13 +21,13 @@ public:
 
     static void setDecayRate(double rate);
 
+    void updateLine(double onBestTour);
+
 private:
     QGraphicsLineItem *line;
     double pheromone;
-    QColor color;
     double length;
-
-    void updateLine();
+    bool onBestTour;
 
     static double decayRate;
 

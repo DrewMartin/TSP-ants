@@ -32,6 +32,9 @@ private slots:
     void reset();
     void cityCountChanged(int val);
     void decayRateChanged(int val);
+    void speedChanged(int val);
+    void pheromoneImportanceChanged(int val);
+    void distanceImportanceChanged(int val);
     void generateClicked();
     void capitalTourClicked();
     void berlinTourClicked();

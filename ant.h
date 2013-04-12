@@ -3,6 +3,7 @@
 
 #include "entity.h"
 #include <QSet>
+#include <QPair>
 #include "city.h"
 
 #define MOVE_SPEED 5
@@ -13,24 +14,35 @@ public:
     Ant(QSharedPointer<City> &startingCity, int index, int numCities);
     virtual ~Ant();
 
-    static void setProportionalMove(bool proportional);
     virtual QGraphicsItem *getGraphicsItem();
-    void update(QList<QSP<City> > &cities);
+    bool update(QList<QSP<City> > &cities);
 
     bool removeCity(int city);
     void addCity();
+    BestDistancePheromone addPheromoneToTour(QList<QSP<City> > &cities);
+    void resetTour();
+    QList<int> getTour();
+
+    static void setSpeed(int speed);
+    static void setPheromoneImportance(int val);
+    static void setDistanceImportance(int val);
 
 protected:
     void updateEllipse();
     void chooseNextCity(QList<QSP<City> > &cities);
 
     QGraphicsEllipseItem *ellipse;
-    QList<bool> history;
+    QList<bool> tabu;
+    QList<int> tour;
+
+    int startCity;
     int fromCity;
     int toCity;
-    double speed;
+    bool doneTour;
 
-    static bool proportionalMove;
+    static int speed;
+    static double pheromoneExponent;
+    static double distanceExponent;
 };
 
 #endif // ANT_H

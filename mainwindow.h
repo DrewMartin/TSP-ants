@@ -37,6 +37,7 @@ private slots:
     void distanceImportanceChanged(int val);
     void defaultPheromoneChanged(int val);
     void framerateChanged(int val);
+    void mutationRateChanged(int val);
     void generateClicked();
     void capitalTourClicked();
     void berlinTourClicked();
@@ -45,9 +46,9 @@ private slots:
     void timerSlot();
 
 private:
-    void tourHelper(const QList<QPoint> &tour,const QList<int> &opt);
+    void tourHelper(const QList<QPointF> &tour, const QList<int> &opt);
     void setWidgetsEnabled(bool enabled);
-    void addCityToScene(QPoint p, int expectedNumCities = -1);
+    void addCityToScene(QPointF p, int expectedNumCities = -1);
     void updateLoop();
 
     Ui::MainWindow *ui;

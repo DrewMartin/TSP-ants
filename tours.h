@@ -1,59 +1,60 @@
 #ifndef TOURS_H
 #define TOURS_H
 
-#include <QPoint>
+#include <QPointF>
 #include <QList>
 
 #define CAPITAL_TOUR_LENGTH 48
-extern const QList<QPoint> capitalTour = QList<QPoint>() <<
-    QPoint(434,140) <<
-    QPoint(144,1) <<
-    QPoint(356,137) <<
-    QPoint(26,81) <<
-    QPoint(199,159) <<
-    QPoint(490,430) <<
-    QPoint(488,358) <<
-    QPoint(468,122) <<
-    QPoint(444,182) <<
-    QPoint(72,198) <<
-    QPoint(352,251) <<
-    QPoint(386,277) <<
-    QPoint(303,258) <<
-    QPoint(297,196) <<
-    QPoint(409,259) <<
-    QPoint(393,65) <<
-    QPoint(490,500) <<
-    QPoint(481,346) <<
-    QPoint(498,456) <<
-    QPoint(380,343) <<
-    QPoint(289,325) <<
-    QPoint(393,107) <<
-    QPoint(335,210) <<
-    QPoint(105,271) <<
-    QPoint(277,224) <<
-    QPoint(43,97) <<
-    QPoint(487,465) <<
-    QPoint(486,384) <<
-    QPoint(205,73) <<
-    QPoint(474,435) <<
-    QPoint(486,270) <<
-    QPoint(209,319) <<
-    QPoint(414,306) <<
-    QPoint(297,116) <<
-    QPoint(1,214) <<
-    QPoint(467,364) <<
-    QPoint(500,443) <<
-    QPoint(476,216) <<
-    QPoint(224,273) <<
-    QPoint(404,206) <<
-    QPoint(321,14) <<
-    QPoint(123,151) <<
-    QPoint(469,473) <<
-    QPoint(484,312) <<
-    QPoint(1,258) <<
-    QPoint(438,289) <<
-    QPoint(334,314) <<
-    QPoint(195,187);
+extern const QList<QPointF> capitalTour = QList<QPointF>() <<
+    QPointF(433.78,140.1427) <<
+    QPointF(143.8418,0.9645) <<
+    QPointF(356.2226,137.3457) <<
+    QPointF(25.831,81.115) <<
+    QPointF(198.5313,158.5648) <<
+    QPointF(490.0799,429.9769) <<
+    QPointF(487.8253,358.4105) <<
+    QPointF(467.9851,122.2994) <<
+    QPointF(444.3442,181.8094) <<
+    QPointF(71.631,197.6273) <<
+    QPointF(352.2288,251.3503) <<
+    QPointF(385.7897,277.1026) <<
+    QPointF(303.1435,257.909) <<
+    QPointF(297.0884,196.277) <<
+    QPointF(408.8508,258.777) <<
+    QPointF(393.3909,64.5255) <<
+    QPointF(490.2731,500) <<
+    QPointF(480.6751,346.2577) <<
+    QPointF(498.0675,455.5363) <<
+    QPointF(380.0567,343.4606) <<
+    QPointF(288.7787,324.9421) <<
+    QPointF(393.0044,107.0602) <<
+    QPointF(334.9008,210.4552) <<
+    QPointF(105.192,270.9298) <<
+    QPointF(277.4414,223.9583) <<
+    QPointF(43.4811,97.0293) <<
+    QPointF(486.6658,464.7955) <<
+    QPointF(485.764,383.9699) <<
+    QPointF(204.6509,72.9167) <<
+    QPointF(473.5893,434.6065) <<
+    QPointF(486.0216,270.1582) <<
+    QPointF(209.0312,318.7693) <<
+    QPointF(413.9397,306.0378) <<
+    QPointF(296.8307,115.5478) <<
+    QPointF(1.4816,213.7346) <<
+    QPointF(466.89,364.4869) <<
+    QPointF(500,443.1906) <<
+    QPointF(476.1659,216.4352) <<
+    QPointF(224.4267,272.8588) <<
+    QPointF(403.9552,205.9221) <<
+    QPointF(321.1157,13.5031) <<
+    QPointF(123.4218,151.331) <<
+    QPointF(468.9513,472.5116) <<
+    QPointF(483.7027,312.4035) <<
+    QPointF(0.6442,258.1019) <<
+    QPointF(438.4823,288.6767) <<
+    QPointF(333.999,314.2361) <<
+    QPointF(194.7307,187.3071);
+
 
 extern const QList<int> capitalOpt = QList<int>() <<
     0 <<
@@ -106,59 +107,59 @@ extern const QList<int> capitalOpt = QList<int>() <<
     8;
 
 #define BERLIN_TOUR_LENGTH 52
-extern const QList<QPoint> berlinTour = QList<QPoint>() <<
-    QPoint(162,245) <<
-    QPoint(7,79) <<
-    QPoint(99,319) <<
-    QPoint(272,291) <<
-    QPoint(243,279) <<
-    QPoint(253,281) <<
-    QPoint(7,98) <<
-    QPoint(151,426) <<
-    QPoint(167,500) <<
-    QPoint(187,481) <<
-    QPoint(461,264) <<
-    QPoint(351,247) <<
-    QPoint(421,85) <<
-    QPoint(440,2) <<
-    QPoint(243,289) <<
-    QPoint(208,157) <<
-    QPoint(42,283) <<
-    QPoint(119,270) <<
-    QPoint(147,372) <<
-    QPoint(161,155) <<
-    QPoint(86,198) <<
-    QPoint(149,249) <<
-    QPoint(138,177) <<
-    QPoint(240,266) <<
-    QPoint(280,247) <<
-    QPoint(349,104) <<
-    QPoint(379,134) <<
-    QPoint(359,170) <<
-    QPoint(190,77) <<
-    QPoint(118,106) <<
-    QPoint(121,236) <<
-    QPoint(165,283) <<
-    QPoint(330,494) <<
-    QPoint(201,247) <<
-    QPoint(197,253) <<
-    QPoint(197,260) <<
-    QPoint(221,260) <<
-    QPoint(228,274) <<
-    QPoint(207,270) <<
-    QPoint(218,277) <<
-    QPoint(136,409) <<
-    QPoint(27,111) <<
-    QPoint(251,391) <<
-    QPoint(201,213) <<
-    QPoint(159,347) <<
-    QPoint(239,206) <<
-    QPoint(336,28) <<
-    QPoint(239,260) <<
-    QPoint(174,266) <<
-    QPoint(171,153) <<
-    QPoint(385,309) <<
-    QPoint(500,104);
+extern const QList<QPointF> berlinTour = QList<QPointF>() <<
+    QPointF(162.3563,244.6809) <<
+    QPointF(7.1839,78.7234) <<
+    QPointF(99.1379,319.1489) <<
+    QPointF(271.5517,291.4894) <<
+    QPointF(242.8161,278.7234) <<
+    QPointF(252.8736,280.8511) <<
+    QPointF(7.1839,97.8723) <<
+    QPointF(150.8621,425.5319) <<
+    QPointF(166.6667,500) <<
+    QPointF(186.7816,480.8511) <<
+    QPointF(461.2069,263.8298) <<
+    QPointF(350.5747,246.8085) <<
+    QPointF(420.977,85.1064) <<
+    QPointF(439.6552,2.1277) <<
+    QPointF(242.8161,289.3617) <<
+    QPointF(208.3333,157.4468) <<
+    QPointF(41.6667,282.9787) <<
+    QPointF(119.2529,270.2128) <<
+    QPointF(146.5517,372.3404) <<
+    QPointF(160.9195,155.3191) <<
+    QPointF(86.2069,197.8723) <<
+    QPointF(149.4253,248.9362) <<
+    QPointF(137.931,176.5957) <<
+    QPointF(239.9425,265.9574) <<
+    QPointF(280.1724,246.8085) <<
+    QPointF(349.1379,104.2553) <<
+    QPointF(379.3103,134.0426) <<
+    QPointF(359.1954,170.2128) <<
+    QPointF(189.6552,76.5957) <<
+    QPointF(117.8161,106.383) <<
+    QPointF(120.6897,236.1702) <<
+    QPointF(165.2299,282.9787) <<
+    QPointF(330.4598,493.617) <<
+    QPointF(201.1494,246.8085) <<
+    QPointF(196.8391,253.1915) <<
+    QPointF(196.8391,259.5745) <<
+    QPointF(221.2644,259.5745) <<
+    QPointF(228.4483,274.4681) <<
+    QPointF(206.8966,270.2128) <<
+    QPointF(218.3908,276.5957) <<
+    QPointF(136.4943,408.5106) <<
+    QPointF(27.2989,110.6383) <<
+    QPointF(251.4368,391.4894) <<
+    QPointF(201.1494,212.766) <<
+    QPointF(159.4828,346.8085) <<
+    QPointF(238.5057,206.383) <<
+    QPointF(336.2069,27.6596) <<
+    QPointF(238.5057,259.5745) <<
+    QPointF(173.8506,265.9574) <<
+    QPointF(170.977,153.1915) <<
+    QPointF(385.0575,308.5106) <<
+    QPointF(500,104.2553);
 
 extern const QList<int> berlinOpt = QList<int>() <<
     0 <<
@@ -215,58 +216,59 @@ extern const QList<int> berlinOpt = QList<int>() <<
     21;
 
 #define FIFTY_ONE_TOUR_LENGTH 51
-extern const QList<QPoint> fiftyOneTour = QList<QPoint>() <<
-    QPoint(294,377) <<
-    QPoint(389,355) <<
-    QPoint(413,464) <<
-    QPoint(159,188) <<
-    QPoint(317,217) <<
-    QPoint(167,341) <<
-    QPoint(135,457) <<
-    QPoint(246,449) <<
-    QPoint(413,239) <<
-    QPoint(405,152) <<
-    QPoint(333,297) <<
-    QPoint(246,232) <<
-    QPoint(40,181) <<
-    QPoint(95,304) <<
-    QPoint(286,116) <<
-    QPoint(413,297) <<
-    QPoint(214,167) <<
-    QPoint(135,239) <<
-    QPoint(103,94) <<
-    QPoint(452,420) <<
-    QPoint(492,304) <<
-    QPoint(333,413) <<
-    QPoint(127,413) <<
-    QPoint(63,377) <<
-    QPoint(56,275) <<
-    QPoint(214,493) <<
-    QPoint(238,348) <<
-    QPoint(341,486) <<
-    QPoint(460,348) <<
-    QPoint(460,196) <<
-    QPoint(294,500) <<
-    QPoint(302,333) <<
-    QPoint(365,72) <<
-    QPoint(484,239) <<
-    QPoint(492,457) <<
-    QPoint(500,500) <<
-    QPoint(254,159) <<
-    QPoint(357,254) <<
-    QPoint(468,109) <<
-    QPoint(40,43) <<
-    QPoint(79,123) <<
-    QPoint(167,72) <<
-    QPoint(40,464) <<
-    QPoint(238,109) <<
-    QPoint(310,72) <<
-    QPoint(254,283) <<
-    QPoint(198,232) <<
-    QPoint(198,399) <<
-    QPoint(381,203) <<
-    QPoint(444,268) <<
-    QPoint(238,290);
+extern const QList<QPointF> fiftyOneTour = QList<QPointF>() <<
+    QPointF(293.6508,376.8116) <<
+    QPointF(388.8889,355.0725) <<
+    QPointF(412.6984,463.7681) <<
+    QPointF(158.7302,188.4058) <<
+    QPointF(317.4603,217.3913) <<
+    QPointF(166.6667,340.5797) <<
+    QPointF(134.9206,456.5217) <<
+    QPointF(246.0317,449.2754) <<
+    QPointF(412.6984,239.1304) <<
+    QPointF(404.7619,152.1739) <<
+    QPointF(333.3333,297.1014) <<
+    QPointF(246.0317,231.8841) <<
+    QPointF(39.6825,181.1594) <<
+    QPointF(95.2381,304.3478) <<
+    QPointF(285.7143,115.942) <<
+    QPointF(412.6984,297.1014) <<
+    QPointF(214.2857,166.6667) <<
+    QPointF(134.9206,239.1304) <<
+    QPointF(103.1746,94.2029) <<
+    QPointF(452.381,420.2899) <<
+    QPointF(492.0635,304.3478) <<
+    QPointF(333.3333,413.0435) <<
+    QPointF(126.9841,413.0435) <<
+    QPointF(63.4921,376.8116) <<
+    QPointF(55.5556,275.3623) <<
+    QPointF(214.2857,492.7536) <<
+    QPointF(238.0952,347.8261) <<
+    QPointF(341.2698,485.5072) <<
+    QPointF(460.3175,347.8261) <<
+    QPointF(460.3175,195.6522) <<
+    QPointF(293.6508,500) <<
+    QPointF(301.5873,333.3333) <<
+    QPointF(365.0794,72.4638) <<
+    QPointF(484.127,239.1304) <<
+    QPointF(492.0635,456.5217) <<
+    QPointF(500,500) <<
+    QPointF(253.9683,159.4203) <<
+    QPointF(357.1429,253.6232) <<
+    QPointF(468.254,108.6957) <<
+    QPointF(39.6825,43.4783) <<
+    QPointF(79.3651,123.1884) <<
+    QPointF(166.6667,72.4638) <<
+    QPointF(39.6825,463.7681) <<
+    QPointF(238.0952,108.6957) <<
+    QPointF(309.5238,72.4638) <<
+    QPointF(253.9683,282.6087) <<
+    QPointF(198.4127,231.8841) <<
+    QPointF(198.4127,398.5507) <<
+    QPointF(380.9524,202.8986) <<
+    QPointF(444.4444,268.1159) <<
+    QPointF(238.0952,289.8551);
+
 
 extern const QList<int> fiftyOneOpt = QList<int>() <<
     0 <<

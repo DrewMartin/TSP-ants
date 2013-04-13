@@ -5,6 +5,7 @@
 int Ant::speed = 10.0;
 double Ant::pheromoneExponent = 4.0;
 double Ant::distanceExponent = 2.50;
+int Ant::mutation = 3;
 
 Ant::Ant(QSP<City> &startingCity, int index, int numCities) :
     Entity(QPointF(startingCity->getLocation())),
@@ -130,8 +131,6 @@ void Ant::chooseNextCity(QList<QSP<City> > &cities)
     QList<double> cityProb;
     double currentProb;
     double total = 0.0;
-    double smallest = INT_MAX;
-    int numZeros = 0;
     QSP<Edge> edge;
 
     //if every city has been visited, return to the starting city
@@ -145,31 +144,15 @@ void Ant::chooseNextCity(QList<QSP<City> > &cities)
         currentProb = 0;
         if (!tabu.at(i)) {
             edge = cities.at(fromCity)->edgeForNeighbour(i);
-//            qDebug() << i << 1.0/cities.at(fromCity)->distance(i) << qPow(1.0/cities.at(fromCity)->distance(i), distanceExponent);
             currentProb =  qPow(edge->getPheromone(), pheromoneExponent) * qPow(1.0/cities.at(fromCity)->distance(i), distanceExponent);
-            if (currentProb > 0.0 && currentProb < smallest)
-                smallest = currentProb;
-            else if (currentProb == 0.0)
-                numZeros++;
         }
         total += currentProb;
         cityProb.append(currentProb);
     }
 
-    if (total == 0) {
-        toCity = tabu.indexOf(false);
+    if (total == 0 || (qrand() % 100) < mutation) {
+        chooseRandomCity();
         return;
-    }
-
-    //give each edge at least a small chance to be chosen
-    if (numZeros > 0) {
-        for (int i = 0; i < cities.length(); i++) {
-            if (!tabu.at(i) && cityProb.at(i) == 0.0) {
-                currentProb = smallest / (2 * numZeros);
-                total += currentProb;
-                cityProb[i] = currentProb;
-            }
-        }
     }
 
     for (int i = 0; i < cityProb.length(); i++)
@@ -190,15 +173,26 @@ void Ant::chooseNextCity(QList<QSP<City> > &cities)
         }
         if (allZero)
             break;
-        if (toCity == fromCity)
-            qDebug() << "Equal cities. Bad";
     } while (toCity == fromCity || toCity < 0);
 
     if (allZero) {
-        toCity = tabu.indexOf(false);
+        chooseRandomCity();
         return;
     }
 
+}
+
+void Ant::chooseRandomCity()
+{
+    int random;
+    while (true) {
+        random = qrand() % tabu.length();
+        if (!tabu.at(random)) {
+            toCity = random;
+            return;
+        }
+
+    }
 }
 
 
@@ -249,4 +243,9 @@ void Ant::setPheromoneImportance(int val)
 void Ant::setDistanceImportance(int val)
 {
     distanceExponent = val/10.0;
+}
+
+void Ant::setMutation(int val)
+{
+    mutation = val;
 }

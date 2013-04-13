@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     decayRateChanged(ui->decayRateSlider->value());
     defaultPheromoneChanged(ui->defaultPheromoneSlider->value());
     framerateChanged(ui->framerateSlider->value());
+    mutationRateChanged(ui->mutationSlider->value());
 
     setWidgetsEnabled(true);
 
@@ -39,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->distanceImportanceSlider, SIGNAL(valueChanged(int)), SLOT(distanceImportanceChanged(int)));
     connect(ui->defaultPheromoneSlider, SIGNAL(valueChanged(int)), SLOT(defaultPheromoneChanged(int)));
     connect(ui->framerateSlider, SIGNAL(valueChanged(int)), SLOT(framerateChanged(int)));
+    connect(ui->mutationSlider, SIGNAL(valueChanged(int)), SLOT(mutationRateChanged(int)));
 
     ui->graphicsView->setToolTip("Left click to place a new city. Right click to remove any city under the mouse cursor.");
 }
@@ -126,6 +128,12 @@ void MainWindow::framerateChanged(int val)
 {
     ui->framerateLabel->setText(QString::number(val));
     frameTime = 1000 / val;
+}
+
+void MainWindow::mutationRateChanged(int val)
+{
+    ui->mutationLabel->setText(QString::number(val));
+    Ant::setMutation(val);
 }
 
 void MainWindow::generateClicked()
@@ -223,7 +231,7 @@ void MainWindow::timerSlot()
     updateLoop();
 }
 
-void MainWindow::tourHelper(const QList<QPoint> &tour, const QList<int> &opt)
+void MainWindow::tourHelper(const QList<QPointF> &tour, const QList<int> &opt)
 {
     reset();
     usingPresetTour = true;
@@ -231,7 +239,7 @@ void MainWindow::tourHelper(const QList<QPoint> &tour, const QList<int> &opt)
     QPen pen(brush, 0);
     pen.setStyle(Qt::DotLine);
 
-    QPoint curr, next;
+    QPointF curr, next;
     for (int i = 0; i < tour.length(); i++) {
         addCityToScene(tour.at(i), tour.length());
         curr = tour.at(opt.at(i));
@@ -257,7 +265,7 @@ void MainWindow::setWidgetsEnabled(bool enabled)
     running = !enabled;
 }
 
-void MainWindow::addCityToScene(QPoint p, int expectedNumCities)
+void MainWindow::addCityToScene(QPointF p, int expectedNumCities)
 {
     if (expectedNumCities < 0) {
         for (int i = 0; i < cities.length(); i++) {

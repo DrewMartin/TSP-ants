@@ -26,10 +26,12 @@ public:
     static void setSpeed(int speed);
     static void setPheromoneImportance(int val);
     static void setDistanceImportance(int val);
+    static void setMutation(int val);
 
 protected:
     void updateEllipse();
     void chooseNextCity(QList<QSP<City> > &cities);
+    void chooseRandomCity();
 
     QGraphicsEllipseItem *ellipse;
     QList<bool> tabu;
@@ -43,6 +45,7 @@ protected:
     static int speed;
     static double pheromoneExponent;
     static double distanceExponent;
+    static int mutation;
 };
 
 #endif // ANT_H

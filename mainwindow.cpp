@@ -219,7 +219,7 @@ void MainWindow::viewClicked(QPoint p, Qt::MouseButton button)
                 for (int j = 0; j < bestTour.length(); j++) {
                     if (bestTour.at(j) == i) {
                         bestTour.removeAt(j);
-                        i--;
+                        j--;
                     } else if (bestTour.at(j) > i) {
                         bestTour[j] = bestTour[j] - 1;
                     }

@@ -31,7 +31,7 @@ double Edge::addPheromone(double amount)
 void Edge::doDecay()
 {
     pheromone *= decayRate;
-    if (pheromone < 0.0000001)
+    if (pheromone < 0.000001)
         pheromone = 0.0;
     onBestTour = false;
 }

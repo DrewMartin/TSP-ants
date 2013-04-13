@@ -129,7 +129,9 @@ void Ant::chooseNextCity(QList<QSP<City> > &cities)
 
     QList<double> cityProb;
     double currentProb;
-    double total = 0;
+    double total = 0.0;
+    double smallest = INT_MAX;
+    int numZeros = 0;
     QSP<Edge> edge;
 
     //if every city has been visited, return to the starting city
@@ -145,6 +147,10 @@ void Ant::chooseNextCity(QList<QSP<City> > &cities)
             edge = cities.at(fromCity)->edgeForNeighbour(i);
 //            qDebug() << i << 1.0/cities.at(fromCity)->distance(i) << qPow(1.0/cities.at(fromCity)->distance(i), distanceExponent);
             currentProb =  qPow(edge->getPheromone(), pheromoneExponent) * qPow(1.0/cities.at(fromCity)->distance(i), distanceExponent);
+            if (currentProb > 0.0 && currentProb < smallest)
+                smallest = currentProb;
+            else if (currentProb == 0.0)
+                numZeros++;
         }
         total += currentProb;
         cityProb.append(currentProb);
@@ -155,22 +161,43 @@ void Ant::chooseNextCity(QList<QSP<City> > &cities)
         return;
     }
 
+    //give each edge at least a small chance to be chosen
+    if (numZeros > 0) {
+        for (int i = 0; i < cities.length(); i++) {
+            if (!tabu.at(i) && cityProb.at(i) == 0.0) {
+                currentProb = smallest / (2 * numZeros);
+                total += currentProb;
+                cityProb[i] = currentProb;
+            }
+        }
+    }
+
     for (int i = 0; i < cityProb.length(); i++)
         cityProb[i] = cityProb[i] / total;
+
+    bool allZero = true;
 
     do {
         //pick a neighbour proportional to its inverse distance and pheromone
         double random = ((double)qrand() / RAND_MAX);
         for (int i = 0; i < cities.length(); i++) {
-            if (random - cityProb[i] < 0.0000001 && !tabu.at(i)) {
+            allZero &= (cityProb[i] == 0.0);
+            if (random - cityProb[i] < 0.000001 && !tabu.at(i)) {
                 toCity = i;
                 break;
             }
             random -= cityProb[i];
         }
+        if (allZero)
+            break;
         if (toCity == fromCity)
             qDebug() << "Equal cities. Bad";
     } while (toCity == fromCity || toCity < 0);
+
+    if (allZero) {
+        toCity = tabu.indexOf(false);
+        return;
+    }
 
 }
 

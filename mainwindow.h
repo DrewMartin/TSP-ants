@@ -35,6 +35,8 @@ private slots:
     void speedChanged(int val);
     void pheromoneImportanceChanged(int val);
     void distanceImportanceChanged(int val);
+    void defaultPheromoneChanged(int val);
+    void framerateChanged(int val);
     void generateClicked();
     void capitalTourClicked();
     void berlinTourClicked();
@@ -48,14 +50,15 @@ private:
     void addCityToScene(QPoint p, int expectedNumCities = -1);
     void updateLoop();
 
+    Ui::MainWindow *ui;
     QList<QSP<City> > cities;
     QSP<QGraphicsScene> scene;
     QList<QSP<Ant> > ants;
     QList<QSP<QGraphicsItem> > pheromoneLines;
     bool usingPresetTour;
     bool running;
+    int frameTime;
 
-    Ui::MainWindow *ui;
 };
 
 #endif // MAINWINDOW_H

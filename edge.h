@@ -18,10 +18,11 @@ public:
     QGraphicsItem* getGraphicsItem();
 
     double getPheromone();
-
-    static void setDecayRate(double rate);
-
     void updateLine(double onBestTour);
+
+    static void setDecayRate(int rate);
+    static void setDefaultPheromone(double amount);
+    static void setShowPheromone(bool show);
 
 private:
     QGraphicsLineItem *line;
@@ -30,6 +31,8 @@ private:
     bool onBestTour;
 
     static double decayRate;
+    static double defaultPheromone;
+    static bool showPheromone;
 
 };
 

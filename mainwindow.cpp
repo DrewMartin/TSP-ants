@@ -8,7 +8,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    frameTime(FRAME_TIME)
 {
     ui->setupUi(this);
     reset();
@@ -16,6 +17,10 @@ MainWindow::MainWindow(QWidget *parent) :
     cityCountChanged(ui->cityCountSlider->value());
     pheromoneImportanceChanged(ui->pheromoneImportanceSlider->value());
     distanceImportanceChanged(ui->distanceImportanceSlider->value());
+    speedChanged(ui->speedSlider->value());
+    decayRateChanged(ui->decayRateSlider->value());
+    defaultPheromoneChanged(ui->defaultPheromoneSlider->value());
+    framerateChanged(ui->framerateSlider->value());
 
     setWidgetsEnabled(true);
 
@@ -32,17 +37,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->speedSlider, SIGNAL(valueChanged(int)), SLOT(speedChanged(int)));
     connect(ui->pheromoneImportanceSlider, SIGNAL(valueChanged(int)), SLOT(pheromoneImportanceChanged(int)));
     connect(ui->distanceImportanceSlider, SIGNAL(valueChanged(int)), SLOT(distanceImportanceChanged(int)));
-
-    ui->decayRateSlider->setValue(PHEROMONE_DEFAULT_DECAY_RATE);
-    ui->speedSlider->setValue(ANT_SPEED);
-    speedChanged(ui->speedSlider->value());
-    decayRateChanged(ui->decayRateSlider->value());
+    connect(ui->defaultPheromoneSlider, SIGNAL(valueChanged(int)), SLOT(defaultPheromoneChanged(int)));
+    connect(ui->framerateSlider, SIGNAL(valueChanged(int)), SLOT(framerateChanged(int)));
 
     ui->graphicsView->setToolTip("Left click to place a new city. Right click to remove any city under the mouse cursor.");
 }
 
 MainWindow::~MainWindow()
 {
+    reset();
     delete ui;
 }
 
@@ -50,6 +53,7 @@ void MainWindow::start()
 {
     ants.clear();
     setWidgetsEnabled(false);
+    Edge::setShowPheromone(ui->showPheromoneCheckbox->isChecked());
 
     QSP<Ant> ant;
 
@@ -84,27 +88,44 @@ void MainWindow::cityCountChanged(int val)
 void MainWindow::decayRateChanged(int val)
 {
     double decay = val/100.0;
-    Edge::setDecayRate(decay);
+    Edge::setDecayRate(val);
     ui->decayRateLabel->setText(QString::number(decay, 'f', 2));
 }
 
 void MainWindow::speedChanged(int val)
 {
-    ui->speedLabel->setText(QString::number(val));
+    if (val > 100) {
+        ui->speedLabel->setText("∞");
+    } else {
+        ui->speedLabel->setText(QString::number(val));
+    }
     Ant::setSpeed(val);
 }
 
 void MainWindow::pheromoneImportanceChanged(int val)
 {
     Ant::setPheromoneImportance(val);
-    ui->pheromoneImportanceLabel->setText(QString::number(val));
+    ui->pheromoneImportanceLabel->setText(QString::number(val / 10.0, 'f', 1));
 }
 
 
 void MainWindow::distanceImportanceChanged(int val)
 {
     Ant::setDistanceImportance(val);
-    ui->distanceImportanceLabel->setText(QString::number(val));
+    ui->distanceImportanceLabel->setText(QString::number(val / 10.0, 'f', 1));
+}
+
+void MainWindow::defaultPheromoneChanged(int val)
+{
+    double amount = val / 100.0f;
+    Edge::setDefaultPheromone(amount);
+    ui->defaultPheromoneLabel->setText(QString::number(amount, 'f', 2));
+}
+
+void MainWindow::framerateChanged(int val)
+{
+    ui->framerateLabel->setText(QString::number(val));
+    frameTime = 1000 / val;
 }
 
 void MainWindow::generateClicked()
@@ -225,8 +246,11 @@ void MainWindow::setWidgetsEnabled(bool enabled)
     ui->startButton->setEnabled(enabled);
     ui->resetButton->setEnabled(enabled);
     ui->tourGroup->setEnabled(enabled);
-    ui->decayGroup->setEnabled(enabled);
-    ui->importanceGroup->setEnabled(enabled);
+    ui->decayRateSlider->setEnabled(enabled);
+    ui->defaultPheromoneSlider->setEnabled(enabled);
+    ui->pheromoneImportanceSlider->setEnabled(enabled);
+    ui->distanceImportanceSlider->setEnabled(enabled);
+    ui->showPheromoneCheckbox->setEnabled(enabled);
 
     ui->stopButton->setEnabled(!enabled);
 
@@ -299,5 +323,5 @@ void MainWindow::updateLoop()
     }
 
 //    qDebug() << "time elapsed" << timer.elapsed();
-    QTimer::singleShot(qMax(0, FRAME_TIME - timer.elapsed()), this, SLOT(timerSlot()));
+    QTimer::singleShot(qMax(0, frameTime - timer.elapsed()), this, SLOT(timerSlot()));
 }

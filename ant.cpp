@@ -2,9 +2,9 @@
 #include <QDebug>
 #include <QVector2D>
 
-int Ant::speed = ANT_SPEED;
-double Ant::pheromoneExponent = 0.50;
-double Ant::distanceExponent = 0.50;
+int Ant::speed = 10.0;
+double Ant::pheromoneExponent = 4.0;
+double Ant::distanceExponent = 2.50;
 
 Ant::Ant(QSP<City> &startingCity, int index, int numCities) :
     Entity(QPointF(startingCity->getLocation())),
@@ -34,11 +34,14 @@ QGraphicsItem *Ant::getGraphicsItem()
 
 bool Ant::update(QList<QSP<City> > &cities)
 {
+    if (cities.length() < 2)
+        return false;
+
     if (toCity == -1)
         chooseNextCity(cities);
 
     double speedLeft = speed;
-    if (speedLeft == 99.0)
+    if (speedLeft > 100.0)
         speedLeft = INT_MAX;
     double distance;
 
@@ -124,7 +127,8 @@ void Ant::chooseNextCity(QList<QSP<City> > &cities)
 
     }
 
-    double cityProb[cities.length()];
+    QList<double> cityProb;
+    double currentProb;
     double total = 0;
     QSP<Edge> edge;
 
@@ -136,17 +140,23 @@ void Ant::chooseNextCity(QList<QSP<City> > &cities)
 
     //set chance to visit any particular neighbour that hasn't been visited this cycle
     for (int i = 0; i < cities.length(); i++) {
-        cityProb[i] = 0;
+        currentProb = 0;
         if (!tabu.at(i)) {
             edge = cities.at(fromCity)->edgeForNeighbour(i);
-            cityProb[i] = qPow(qMax(0.000001, edge->getPheromone()), pheromoneExponent) * qPow(1.0/cities.at(fromCity)->distance(i), distanceExponent);
-            total += cityProb[i];
+//            qDebug() << i << 1.0/cities.at(fromCity)->distance(i) << qPow(1.0/cities.at(fromCity)->distance(i), distanceExponent);
+            currentProb =  qPow(edge->getPheromone(), pheromoneExponent) * qPow(1.0/cities.at(fromCity)->distance(i), distanceExponent);
         }
+        total += currentProb;
+        cityProb.append(currentProb);
     }
 
-    for (int i = 0; i < cities.length(); i++) {
-        cityProb[i] /= total;
+    if (total == 0) {
+        toCity = tabu.indexOf(false);
+        return;
     }
+
+    for (int i = 0; i < cityProb.length(); i++)
+        cityProb[i] = cityProb[i] / total;
 
     do {
         //pick a neighbour proportional to its inverse distance and pheromone
@@ -206,10 +216,10 @@ void Ant::setSpeed(int speed)
 
 void Ant::setPheromoneImportance(int val)
 {
-    pheromoneExponent = 1.0 - val / 100.0;
+    pheromoneExponent = val/10.0;
 }
 
 void Ant::setDistanceImportance(int val)
 {
-    distanceExponent = 1.0 - val / 100.0;
+    distanceExponent = val/10.0;
 }

@@ -13,24 +13,17 @@ typedef QPair<double, double> BestDistancePheromone;
 #define ANT_RADIUS 2
 #define MAX_GEN_X (MAX_X - 10)
 #define MAX_GEN_Y (MAX_Y - 10)
-#define FRAME_TIME 33
+#define FRAME_TIME 5
 
-#define PHEROMONE_MULTIPLIER 100.0
-#define PHEROMONE_DEFAULT_DECAY_RATE 50
 #define CITY_Z 50
 #define LINE_Z 25
 #define ANT_Z 75
 #define PHEROMONE_Z 10
+#define BEST_PHEROMONE_Z 20
 #define CITY_COLOR "#ff9c00"
 #define ANT_COLOR "#ff0000"
 #define EDGE_COLOR "#00ff00"
 #define BEST_TOUR_COLOR "#00ffff"
-
-#define ANT_SPEED 5.0
-#define ANT_PROPORTIONAL_STEPS 25
-
-#define PHEROMONE_WEIGHT 10
-#define DISTANCE_WEIGHT 2
 
 #define QSP QSharedPointer
 #define LOC_HELPER(loc,rad) loc.x()-rad, loc.y()-rad, rad*2+1, rad*2+1

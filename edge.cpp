@@ -3,10 +3,12 @@
 #include <QBrush>
 #include <QDebug>
 
-double Edge::decayRate = PHEROMONE_DEFAULT_DECAY_RATE;
+double Edge::decayRate = 0.93;
+double Edge::defaultPheromone = 0.8;
+bool Edge::showPheromone = false;
 
 Edge::Edge(QPointF p1, QPointF p2) :
-    pheromone(0.0),
+    pheromone(defaultPheromone),
     onBestTour(false)
 {
     length = dist(p1, p2);
@@ -36,7 +38,8 @@ void Edge::doDecay()
 
 void Edge::reset()
 {
-    pheromone = 0.0;
+    pheromone = defaultPheromone;
+    onBestTour = false;
     updateLine(0.0);
 }
 
@@ -60,14 +63,24 @@ double Edge::getPheromone()
     return pheromone;
 }
 
-void Edge::setDecayRate(double rate)
+void Edge::setDecayRate(int rate)
 {
-    decayRate = 1.0 - rate;
+    decayRate = 1.0 - rate / 100.0;
+}
+
+void Edge::setDefaultPheromone(double amount)
+{
+    defaultPheromone = amount;
+}
+
+void Edge::setShowPheromone(bool show)
+{
+    showPheromone = show;
 }
 
 void Edge::updateLine(double best)
 {
-    if (best <= 0.0 || best / 10.0 > pheromone) {
+    if (!onBestTour && (!showPheromone || best <= 0.0 || best / 10.0 > pheromone)) {
         line->setVisible(false);
         return;
     }
@@ -76,9 +89,11 @@ void Edge::updateLine(double best)
     if (onBestTour) {
         pen.setColor(BEST_TOUR_COLOR);
         pen.setWidthF(5.0);
+        line->setZValue(BEST_PHEROMONE_Z);
     } else {
         pen.setColor(EDGE_COLOR);
         pen.setWidthF(5.0*pheromone/best);
+        line->setZValue(PHEROMONE_Z);
     }
 
     line->setPen(pen);

@@ -15,9 +15,12 @@ public:
 
     QPointF &getLocation();
     virtual QGraphicsItem *getGraphicsItem() = 0;
+    static void setScale(double x, double y);
 
 protected:
     QPointF location;
+    static double scaleX;
+    static double scaleY;
 };
 
 #endif // ENTITY_H

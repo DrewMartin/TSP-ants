@@ -22,6 +22,7 @@ public:
     BestDistancePheromone addPheromoneToTour(QList<QSP<City> > &cities);
     void resetTour();
     QList<int> getTour();
+    int tourLength();
 
     static void setSpeed(int speed);
     static void setPheromoneImportance(int val);

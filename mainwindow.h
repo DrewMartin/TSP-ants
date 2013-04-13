@@ -56,9 +56,13 @@ private:
     QSP<QGraphicsScene> scene;
     QList<QSP<Ant> > ants;
     QList<QSP<QGraphicsItem> > pheromoneLines;
+    QList<int> bestTour;
+    bool layoutChanged;
     bool usingPresetTour;
     bool running;
     int frameTime;
+    double bestSoFar;
+    double optimal;
 
 };
 

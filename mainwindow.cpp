@@ -56,6 +56,7 @@ void MainWindow::start()
     ants.clear();
     setWidgetsEnabled(false);
     Edge::setShowPheromone(ui->showPheromoneCheckbox->isChecked());
+    bestSoFar = LONG_LONG_MAX;
 
     QSP<Ant> ant;
 
@@ -65,6 +66,8 @@ void MainWindow::start()
         scene->addItem(ant->getGraphicsItem());
         cities.at(i)->reset();
     }
+    layoutChanged = false;
+    ui->pathLengthEdit->setText("");
     updateLoop();
 }
 
@@ -77,9 +80,14 @@ void MainWindow::reset()
 {
     ants.clear();
     cities.clear();
+    Edge::setScale(1.0, 1.0);
+    Entity::setScale(1.0, 1.0);
+    ui->graphicsView->resetTransform();
     scene = QSharedPointer<QGraphicsScene>(new QGraphicsScene(0, 0, MAX_X, MAX_Y));
+    ui->graphicsView->setSceneRect(0, 0, MAX_X, MAX_Y);
     ui->graphicsView->setScene(scene.data());
     usingPresetTour = false;
+    optimal = 0.0;
 }
 
 void MainWindow::cityCountChanged(int val)
@@ -183,11 +191,13 @@ void MainWindow::viewClicked(QPoint p, Qt::MouseButton button)
         if (running) {
             for (int i = 0; i < ants.length(); i++)
                 ants.at(i)->addCity();
+
             ant = QSP<Ant>(new Ant(cities.last(), cities.length()-1, cities.length()));
             ants.append(ant);
             scene->addItem(ant->getGraphicsItem());
 
         }
+        layoutChanged = true;
     } else if (button == Qt::RightButton) {
         int i = 0;
         int maxDist = qPow(CITY_RADIUS+1, 2);
@@ -196,6 +206,7 @@ void MainWindow::viewClicked(QPoint p, Qt::MouseButton button)
         while (iter.hasNext()) {
             QPointF cPoint = iter.next()->getLocation();
             if (sqDist(p, cPoint) < maxDist) {
+                layoutChanged = true;
                 iter.remove();
                 antIter.toFront();
                 while (antIter.hasNext()) {
@@ -205,6 +216,14 @@ void MainWindow::viewClicked(QPoint p, Qt::MouseButton button)
                 }
                 for (int j = 0; j < cities.length(); j++)
                     cities.at(j)->removeCity(i);
+                for (int j = 0; j < bestTour.length(); j++) {
+                    if (bestTour.at(j) == i) {
+                        bestTour.removeAt(j);
+                        i--;
+                    } else if (bestTour.at(j) > i) {
+                        bestTour[j] = bestTour[j] - 1;
+                    }
+                }
                 i--;
             }
             i++;
@@ -235,17 +254,36 @@ void MainWindow::tourHelper(const QList<QPointF> &tour, const QList<int> &opt)
 {
     reset();
     usingPresetTour = true;
+
     QBrush brush(Qt::black);
     QPen pen(brush, 0);
     pen.setStyle(Qt::DotLine);
 
     QPointF curr, next;
+    double length = 0.0;
+    double maxY = 0, maxX = 0;
     for (int i = 0; i < tour.length(); i++) {
-        addCityToScene(tour.at(i), tour.length());
+//        addCityToScene(tour.at(i), tour.length());
         curr = tour.at(opt.at(i));
         next = tour.at(opt.at((i+1) % tour.length()));
+        length += dist(curr, next);
+        if (curr.x() > maxX)
+            maxX = curr.x();
+        if (curr.y() > maxY)
+            maxY = curr.y();
+
         scene->addLine(curr.x(), curr.y(), next.x(), next.y(), pen)->setZValue(LINE_Z);
     }
+    optimal = length;
+    qDebug() << "Optimal path length:" << length;
+    ui->graphicsView->setSceneRect(0, 0, maxX * 1.02, maxY * 1.02);
+    double scaleX = MAX_GEN_X / maxX, scaleY = MAX_GEN_Y / maxY;
+    ui->graphicsView->scale(scaleX, scaleY);
+    Edge::setScale(scaleX, scaleY);
+    Entity::setScale(scaleX, scaleY);
+
+    for (int i = 0; i < tour.length(); i++)
+        addCityToScene(tour.at(i), tour.length());
 }
 
 void MainWindow::setWidgetsEnabled(bool enabled)
@@ -307,7 +345,7 @@ void MainWindow::updateLoop()
         BestDistancePheromone curr;
         for (i = 0; i < ants.length(); i++) {
             curr = ants.at(i)->addPheromoneToTour(cities);
-            if (curr.first < shortestTour) {
+            if (curr.first < shortestTour && ants.at(i)->tourLength() == cities.length()) {
                 shortestTour = curr.first;
                 shortTourIndex = i;
             }
@@ -315,11 +353,22 @@ void MainWindow::updateLoop()
                 bestPheromone = curr.second;
         }
 
-        QList<int> bestTour = ants.at(shortTourIndex)->getTour();
-        for (i = 1; i < bestTour.length(); i++) {
-            cities.at(bestTour.at(i))->edgeForNeighbour(bestTour.at(i-1))->setBest();
+        if (shortestTour < bestSoFar || layoutChanged) {
+            bestSoFar = shortestTour;
+            ui->pathLengthEdit->setText(QString::number(bestSoFar));
+
+            for (i = 0; i < bestTour.length(); i++)
+                cities.at(bestTour.at(i))->edgeForNeighbour(bestTour.at((i + 1) % bestTour.length()))->setBest(false);
+
+            bestTour = ants.at(shortTourIndex)->getTour();
+            for (i = 0; i < bestTour.length(); i++)
+                cities.at(bestTour.at(i))->edgeForNeighbour(bestTour.at((i + 1) % bestTour.length()))->setBest(true);
+            layoutChanged = false;
+
+            if (bestSoFar < optimal) {
+                qDebug() << "Found a path shorter than optimal";
+            }
         }
-        cities.at(bestTour.at(0))->edgeForNeighbour(bestTour.last())->setBest();
 
         for (i = 0; i < cities.length(); i++)
             cities.at(i)->updateLines(bestPheromone);

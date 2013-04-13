@@ -107,7 +107,12 @@ void Ant::addCity()
 
 void Ant::updateEllipse()
 {
-    ellipse->setRect(LOC_HELPER(location,ANT_RADIUS));
+    if (speed > 100) {
+        ellipse->setVisible(false);
+    } else {
+        ellipse->setRect(LOC_HELPER(location,ANT_RADIUS));
+        ellipse->setVisible(true);
+    }
 }
 
 void Ant::chooseNextCity(QList<QSP<City> > &cities)
@@ -198,9 +203,9 @@ void Ant::chooseRandomCity()
 
 BestDistancePheromone Ant::addPheromoneToTour(QList<QSharedPointer<City> > &cities)
 {
-    double tourLength = cities.at(tour.at(0))->edgeForNeighbour(tour.last())->getLength();
-    for (int i = 1; i < tour.length(); i++)
-        tourLength += cities.at(tour.at(i))->edgeForNeighbour(tour.at(i-1))->getLength();
+    double tourLength = 0.0;
+    for (int i = 0; i < tour.length(); i++)
+        tourLength += cities.at(tour.at(i))->distance(tour.at((i + 1) % tour.length()));
 
     double pheromoneAdd = 1.0/tourLength;
     double bestPheromone = 0.0, curr;
@@ -228,6 +233,11 @@ void Ant::resetTour()
 QList<int> Ant::getTour()
 {
     return tour;
+}
+
+int Ant::tourLength()
+{
+    return tour.length();
 }
 
 void Ant::setSpeed(int speed)

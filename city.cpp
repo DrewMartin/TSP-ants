@@ -1,5 +1,6 @@
 #include "city.h"
 #include <qmath.h>
+#include <QDebug>
 
 #define CHECK_CITY(num) if (num < 0 || num >= edges.length()) throw "Bad city"
 
@@ -7,7 +8,6 @@ City::City(QPointF location, int myIndex, int cityCount) :
     Entity(location),
     index(myIndex)
 {
-
     ellipse = new QGraphicsEllipseItem(LOC_HELPER(location,CITY_RADIUS));
     ellipse->setPen(QPen(CITY_COLOR));
     ellipse->setBrush(QBrush(CITY_COLOR));

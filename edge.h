@@ -13,7 +13,7 @@ public:
     double addPheromone(double amount);
     void doDecay();
     void reset();
-    void setBest();
+    void setBest(bool best);
     double getLength();
     QGraphicsItem* getGraphicsItem();
 
@@ -23,6 +23,7 @@ public:
     static void setDecayRate(int rate);
     static void setDefaultPheromone(double amount);
     static void setShowPheromone(bool show);
+    static void setScale(double x, double y);
 
 private:
     QGraphicsLineItem *line;
@@ -33,7 +34,7 @@ private:
     static double decayRate;
     static double defaultPheromone;
     static bool showPheromone;
-
+    static double scale;
 };
 
 #endif // EDGE_H

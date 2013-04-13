@@ -9,7 +9,7 @@ typedef QPair<double, double> BestDistancePheromone;
 
 #define MAX_X 510
 #define MAX_Y 510
-#define CITY_RADIUS 3
+#define CITY_RADIUS 4
 #define ANT_RADIUS 2
 #define MAX_GEN_X (MAX_X - 10)
 #define MAX_GEN_Y (MAX_Y - 10)
@@ -26,7 +26,7 @@ typedef QPair<double, double> BestDistancePheromone;
 #define BEST_TOUR_COLOR "#00ffff"
 
 #define QSP QSharedPointer
-#define LOC_HELPER(loc,rad) loc.x()-rad, loc.y()-rad, rad*2+1, rad*2+1
+#define LOC_HELPER(loc,rad) loc.x()-(rad/scaleX), loc.y()-(rad/scaleY), rad*2/scaleX, rad*2/scaleY
 
 inline double sqDist(const QPointF &p1, const QPointF &p2) {
     return qPow(p1.x() - p2.x(), 2) + qPow(p1.y() - p2.y(), 2);

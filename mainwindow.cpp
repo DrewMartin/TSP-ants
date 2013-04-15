@@ -41,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->defaultPheromoneSlider, SIGNAL(valueChanged(int)), SLOT(defaultPheromoneChanged(int)));
     connect(ui->framerateSlider, SIGNAL(valueChanged(int)), SLOT(framerateChanged(int)));
     connect(ui->mutationSlider, SIGNAL(valueChanged(int)), SLOT(mutationRateChanged(int)));
+    connect(ui->showPheromoneCheckbox, SIGNAL(clicked(bool)), SLOT(showPheromoneClicked(bool)));
 
     ui->graphicsView->setToolTip("Left click to place a new city. Right click to remove any city under the mouse cursor.");
 }
@@ -55,9 +56,8 @@ void MainWindow::start()
 {
     ants.clear();
     setWidgetsEnabled(false);
-    Edge::setShowPheromone(ui->showPheromoneCheckbox->isChecked());
     bestSoFar = LONG_LONG_MAX;
-
+    bestTour.clear();
     QSP<Ant> ant;
 
     for (int i = 0; i < cities.length(); i++) {
@@ -67,7 +67,10 @@ void MainWindow::start()
         cities.at(i)->reset();
     }
     layoutChanged = false;
+
     ui->pathLengthEdit->setText("");
+    tours = 0;
+    ui->toursLengthEdit->setText(QString::number(tours));
     updateLoop();
 }
 
@@ -142,6 +145,11 @@ void MainWindow::mutationRateChanged(int val)
 {
     ui->mutationLabel->setText(QString::number(val));
     Ant::setMutation(val);
+}
+
+void MainWindow::showPheromoneClicked(bool checked)
+{
+    Edge::setShowPheromone(checked);
 }
 
 void MainWindow::generateClicked()
@@ -296,7 +304,6 @@ void MainWindow::setWidgetsEnabled(bool enabled)
     ui->defaultPheromoneSlider->setEnabled(enabled);
     ui->pheromoneImportanceSlider->setEnabled(enabled);
     ui->distanceImportanceSlider->setEnabled(enabled);
-    ui->showPheromoneCheckbox->setEnabled(enabled);
 
     ui->stopButton->setEnabled(!enabled);
 
@@ -337,6 +344,8 @@ void MainWindow::updateLoop()
         allDone &= ants.at(i)->update(cities);
 
     if (allDone && cities.length() > 1) {
+        tours++;
+        ui->toursLengthEdit->setText(QString::number(tours));
         for (i = 0; i < cities.length(); i++)
             cities.at(i)->doDecay();
 
@@ -365,9 +374,6 @@ void MainWindow::updateLoop()
                 cities.at(bestTour.at(i))->edgeForNeighbour(bestTour.at((i + 1) % bestTour.length()))->setBest(true);
             layoutChanged = false;
 
-            if (bestSoFar < optimal) {
-                qDebug() << "Found a path shorter than optimal";
-            }
         }
 
         for (i = 0; i < cities.length(); i++)
@@ -380,5 +386,5 @@ void MainWindow::updateLoop()
     }
 
 //    qDebug() << "time elapsed" << timer.elapsed();
-    QTimer::singleShot(qMax(0, frameTime - timer.elapsed()), this, SLOT(timerSlot()));
+    QTimer::singleShot(qMax(1, frameTime - timer.elapsed()), this, SLOT(timerSlot()));
 }

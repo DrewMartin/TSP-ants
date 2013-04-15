@@ -38,6 +38,7 @@ private slots:
     void defaultPheromoneChanged(int val);
     void framerateChanged(int val);
     void mutationRateChanged(int val);
+    void showPheromoneClicked(bool checked);
     void generateClicked();
     void capitalTourClicked();
     void berlinTourClicked();
@@ -63,6 +64,7 @@ private:
     int frameTime;
     double bestSoFar;
     double optimal;
+    int tours;
 
 };
 

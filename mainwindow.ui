@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_11">
+   <layout class="QHBoxLayout" name="horizontalLayout_4">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
@@ -122,7 +122,7 @@
       <item>
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Distance Importance</string>
+         <string>Distance Exponent</string>
         </property>
        </widget>
       </item>
@@ -168,7 +168,7 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Pheromone Importance</string>
+         <string>Pheromone Exponent</string>
         </property>
        </widget>
       </item>
@@ -514,18 +514,28 @@
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <item>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
          <widget class="QLabel" name="label_7">
           <property name="text">
            <string>Shortest path length:</string>
           </property>
          </widget>
         </item>
-        <item>
+        <item row="0" column="1">
          <widget class="QLineEdit" name="pathLengthEdit"/>
         </item>
-        <item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>Full Tours</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="toursLengthEdit"/>
+        </item>
+        <item row="0" column="2">
          <spacer name="horizontalSpacer_2">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>

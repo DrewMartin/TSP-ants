@@ -300,10 +300,6 @@ void MainWindow::setWidgetsEnabled(bool enabled)
     ui->startButton->setEnabled(enabled);
     ui->resetButton->setEnabled(enabled);
     ui->tourGroup->setEnabled(enabled);
-    ui->decayRateSlider->setEnabled(enabled);
-    ui->defaultPheromoneSlider->setEnabled(enabled);
-    ui->pheromoneImportanceSlider->setEnabled(enabled);
-    ui->distanceImportanceSlider->setEnabled(enabled);
 
     ui->stopButton->setEnabled(!enabled);
 
